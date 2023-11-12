@@ -179,7 +179,7 @@ class TodoListItem extends StatelessWidget {
         ),
         leading: Checkbox(
           value: todo.isCompleted,
-          onChanged: onCheckboxChanged, // No need for () => onCheckboxChanged()
+          onChanged: onCheckboxChanged, 
         ),
         trailing: IconButton(
           icon: const Icon(Icons.delete),
