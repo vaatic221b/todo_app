@@ -1,3 +1,1 @@
-# todo_app
-
-A new Flutter project.
+Sucalit - ToDo Application Activity using Hive database
