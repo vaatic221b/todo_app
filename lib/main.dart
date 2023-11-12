@@ -66,55 +66,11 @@ class _TodoListPageState extends State<TodoListPage> {
             itemCount: box.values.length,
             itemBuilder: (context, index) {
               var todo = box.getAt(index);
-              return Card(
-                elevation: 4,
-                child: ListTile(
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-
-                      Text(
-                        todo!.title,
-                        style: TextStyle(
-                          decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold
-                        )
-                      ),
-
-                      const SizedBox(height: 5),
-
-                      if (todo.dueDate != null)
-                        Text(
-                          'Due Date: ${DateFormat('MM/dd/yyyy').format(todo.dueDate!)}',
-                          style: TextStyle(
-                            color: todo.isCompleted ? Colors.grey : const Color.fromARGB(255, 194, 88, 81),
-                            decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
-                            fontSize: 12
-                          )
-                        )
-                    ]
-
-                  ),
-
-
-                  leading: Checkbox(
-                    value: todo.isCompleted,
-                    onChanged: (val) {
-                      _todoService.updateIsCompleted(index, todo);
-                    },
-                  ),
-
-
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      _todoService.deleteTodo(index);
-                    },
-                  ),
-                ),
+              return TodoListItem(
+                todo: todo!,
+                onDelete: () => _todoService.deleteTodo(index),
+                onCheckboxChanged: (bool? val) => _todoService.updateIsCompleted(index, todo),
               );
-
             },
           );
         },
@@ -177,6 +133,59 @@ class _TodoListPageState extends State<TodoListPage> {
         child: const Icon(Icons.add),
       ),
 
+    );
+  }
+}
+
+class TodoListItem extends StatelessWidget {
+  final TodoItem todo;
+  final VoidCallback onDelete;
+  final void Function(bool?) onCheckboxChanged; 
+
+  const TodoListItem({
+    Key? key,
+    required this.todo,
+    required this.onDelete,
+    required this.onCheckboxChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      child: ListTile(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              todo.title,
+              style: TextStyle(
+                decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 5),
+            if (todo.dueDate != null)
+              Text(
+                'Due Date: ${DateFormat('MM/dd/yyyy').format(todo.dueDate!)}',
+                style: TextStyle(
+                  color: todo.isCompleted ? Colors.grey : const Color.fromARGB(255, 194, 88, 81),
+                  decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
+                  fontSize: 12,
+                ),
+              ),
+          ],
+        ),
+        leading: Checkbox(
+          value: todo.isCompleted,
+          onChanged: onCheckboxChanged, // No need for () => onCheckboxChanged()
+        ),
+        trailing: IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: onDelete,
+        ),
+      ),
     );
   }
 }
